@@ -38,7 +38,7 @@
     const saveRapidStepTest = (rapidStepTest) => {
         $.ajax({
             type: 'POST',
-            url: '/rapidsteptest',
+            url: 'https://dev.stedi.me/rapidsteptest',
             data: JSON.stringify(rapidStepTest), // or JSON.stringify ({name: 'jonas'}),
             statusCode:{
                 401: () => window.location.href="/",
@@ -78,7 +78,7 @@
         let tokenEmail="";
         $.ajax({
            type: 'GET',
-            url: '/validate/'+usertoken,
+            url: 'https://dev.stedi.me/validate/'+usertoken,
             success: function(data){
                if (data==""){
                  window.location="/"
