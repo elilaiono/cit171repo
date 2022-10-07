@@ -25,8 +25,8 @@ function userlogin(){
     setusername();
     $.ajax({
         type: 'POST',
-        url: '/login',
-        data: ' {"userName":"'+ userName +'", "password":"'+ password +'"}', // or JSON.stringify ({name: 'jonas'}),
+        url: 'https://dev.stedi.me/login',
+        data: ' {"userName":"'+ phonenumber +'", "password":"'+ password +'"}', // or JSON.stringify ({name: 'jonas'}),
         success: function(data) {
             savetoken(data);
             localStorage.removeItem("customer");
@@ -38,8 +38,8 @@ function userlogin(){
 
 }
 
-function setusername(){
-    userName = $("#un").val();
+function setphonenumber(){
+    phonenumber = $("#phonenumber").val();
 }
 
 function setuserpassword(){
