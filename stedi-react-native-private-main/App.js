@@ -13,6 +13,7 @@ const AppStack = createNativeStackNavigator();
 
 const App = () =>{
   const [isFirstLaunch, setFirstLaunch] = React.useState(true);
+  const [phoneNumber, setPhoneNumber] = React.useState("");
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [homeTodayScore, setHomeTodayScore] = React.useState(0);
 
@@ -28,6 +29,8 @@ return(
     return (
       <View>
         <TextInput
+          value={phoneNumber}
+          onChangeText={setPhoneNumber}
           style={styles.input}
           placeholderTextColor='#4251f5'
           placeholder='Cell Phone'>
@@ -35,8 +38,19 @@ return(
         <Button 
           title='Send'
           style={styles.button}
-          onPress={()=>{
-            console.log('Button was pressed')
+          onPress={async()=>{
+            console.log(phoneNumber + 'Button was pressed')
+
+            await fetch(
+              'https://dev.stedi.me/twofactorlogin/'+ phoneNumber,
+              {
+                method: 'POST',
+                headers: {
+                  'content-type' : 'application/text'
+                }
+              }
+            )
+
           }}
           ></Button>
       </View>
