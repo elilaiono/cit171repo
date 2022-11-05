@@ -1,11 +1,11 @@
 import React, { useEffect, useState, } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, AsyncStorage, TextInput, Button } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput, Button, Alert } from 'react-native';
 import  Navigation from './components/Navigation';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import OnboardingScreen from './screens/OnboardingScreen';
 import Home from './screens/Home';
 import { NavigationContainer } from '@react-navigation/native';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -16,6 +16,7 @@ const App = () =>{
   const [phoneNumber, setPhoneNumber] = React.useState("");
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [homeTodayScore, setHomeTodayScore] = React.useState(0);
+  const [tempCode, setTempCode] = React.useState(null);
 
    if (isFirstLaunch == true){
 return(
@@ -53,6 +54,51 @@ return(
 
           }}
           ></Button>
+          <TextInput
+          value={tempCode}
+          onChangeText={setTempCode}
+          style={styles.input2}
+          placeholderTextColor="#4251f5"
+          placeholder='Enter Code'>
+        </TextInput>
+        <Button
+          title='Verify'
+          style={styles.button}
+          onPress={async()=>{
+            console.log('OTP Button Pressed');
+
+            const loginResponse=await fetch(
+              'https://dev.stedi.me/twofactorlogin',
+              {
+                method:'POST',
+                headers:{
+                  'content-type' : 'application/text'
+                },
+                body:JSON.stringify({
+                  phoneNumber,
+                  oneTimePassword:tempCode
+                })
+              }
+            )
+            
+            console.log(phoneNumber)
+            console.log(tempCode)
+            console.log("Status",loginResponse.status)
+            // const loginToken = await loginResponse.text();
+            // console.log('login token', loginToken)
+            
+
+            if(loginResponse.status == 200){
+              const sessionToken = await loginResponse.text();
+              await AsyncStorage.setItem('sessionToken', sessionToken);
+              console.log("Session Token", sessionToken)
+              setIsLoggedIn(true);
+            }
+            else{
+              Alert.alert("Warning", "An invalid code was entered.")
+            }
+          }}
+        />
       </View>
     )
   }
@@ -66,6 +112,12 @@ return(
       justifyContent: 'center'
   },
   input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
+  },
+  input2: {
     height: 40,
     margin: 12,
     borderWidth: 1,
